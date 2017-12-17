@@ -71,6 +71,11 @@ public class Board {
         this.mslcopa = 0;
     }
 
+    void clear() {
+        for (int i = 0; i < 64; i++) {
+            this.setSquare(i, Utility.nullPiece);
+        }
+    }
     boolean insufficientMaterial() {
         int whiteMaterial = 0, blackMaterial = 0;
         for (Piece piece : this.board) {
@@ -135,7 +140,7 @@ public class Board {
         }
 
     }
-    private void setSquare(int location, Piece piece) {
+    void setSquare(int location, Piece piece) {
         this.board[location] = piece;
     }
     private void updateGameState() {

@@ -3,6 +3,7 @@ package chess;
 //TODO: en passant
 //TODO: promotion
 //TODO: change Board.getPreviousBoards to public for en passant
+//TODO: make move illegal if it puts your king in check
 
 
 public class Game {

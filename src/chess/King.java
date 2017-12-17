@@ -87,7 +87,7 @@ public class King extends Piece {
     public boolean isLegalMove(Board board, int location) {
         boolean obstructedEnd = (board.getSquare(location).getColor() == this.getColor());
         int dX = Utility.getRC(location)[1] - Utility.getRC(this.getLocation())[1];
-        int dY = Utility.getRC(location)[0] - Utility.getRC(this.getLocation())[0];
+        int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(location)[0];
         boolean oneSquare = Math.abs(dX) <= 1 && Math.abs(dY) <= 1;
         boolean isSafe = board.isSafe(location, this.getColor());
 

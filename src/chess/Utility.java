@@ -130,8 +130,6 @@ class Utility {
             for (int i = 1; i < Math.abs(dY); i++) {
                 squares.add(start + 7 * i);
             }
-        } else {
-            return null;
         }
         return squares;
     }
@@ -163,6 +161,7 @@ class Utility {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //TODO: convert string to move
         return move;
     }
     //public static Board toBoard(String board);

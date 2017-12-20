@@ -15,12 +15,13 @@ public class Game {
 
         System.out.println("Hello World");
 
-        String move = Utility.getMove(board.getTurn());
+        /*
+        Move move = Utility.getMove(board.getTurn());
         int location = Utility.moveToLocation(move);
         Piece piece = Utility.moveToPiece(board, move);
-        System.out.println(piece.isLegalMove(board, location));
-        board.move(piece, location);
-
+        System.out.println(piece.isLegalMove(board, move));
+        board.move(piece, move);
+        */
 
 
         //while (board.getGameState().equals("in progress")) {

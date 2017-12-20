@@ -9,18 +9,19 @@ public class King extends Piece {
         super(color, location);
     }
 
-    private boolean canCastle(Board board, int location) {
+    private boolean canCastle(Board board, Move move) {
         /* 1. King and rook have not moved (king complete)
         * 2. The king is not checked (complete)
         * 3. There is no enemy piece attacking a square between the king and rook (complete)
         * 4. All squares between the king and rook are empty
         */
-
+        int location = move.getEnd();
         boolean hasKingMoved = this.hasMoved();
         boolean hasRookMoved;
         boolean isKingChecked = board.isSafe(this.getLocation(), this.getColor());
         boolean emptySquares = true;
         boolean squaresAttacked = false;
+        boolean startsMatch = this.getLocation() == move.getStart();
 
         if (location == 2 && this.getColor() == Utility.BLACK) {
             hasRookMoved = Utility.pieces[this.getColor()][Utility.R1].hasMoved();
@@ -30,8 +31,9 @@ public class King extends Piece {
                 }
             }
             for (Piece piece : Utility.pieces[1 - this.getColor()]) {
-                for (int move : piece.getMoves()) {
-                    if (move == 1 || move == 2 || move == 3 || move == 4) {
+                for (Move move1 : piece.getMoves()) {
+                    int loc = move1.getEnd();
+                    if (loc == 1 || loc == 2 || loc == 3 || loc == 4) {
                         squaresAttacked = true;
                     }
                 }
@@ -44,8 +46,9 @@ public class King extends Piece {
                 }
             }
             for (Piece piece : Utility.pieces[1 - this.getColor()]) {
-                for (int move : piece.getMoves()) {
-                    if (move == 4 || move == 5 || move == 6) {
+                for (Move move1 : piece.getMoves()) {
+                    int loc = move1.getEnd();
+                    if (loc == 4 || loc == 5 || loc == 6) {
                         squaresAttacked = true;
                     }
                 }
@@ -58,8 +61,9 @@ public class King extends Piece {
                 }
             }
             for (Piece piece : Utility.pieces[1 - this.getColor()]) {
-                for (int move : piece.getMoves()) {
-                    if (move == 57 || move == 56 || move == 59 || move == 60) {
+                for (Move move1 : piece.getMoves()) {
+                    int loc = move1.getEnd();
+                    if (loc == 57 || loc == 56 || loc == 59 || loc == 60) {
                         squaresAttacked = true;
                     }
                 }
@@ -72,8 +76,9 @@ public class King extends Piece {
                 }
             }
             for (Piece piece : Utility.pieces[1 - this.getColor()]) {
-                for (int move : piece.getMoves()) {
-                    if (move == 60 || move == 61 || move == 62) {
+                for (Move move1 : piece.getMoves()) {
+                    int loc = move1.getEnd();
+                    if (loc == 60 || loc == 61 || loc == 62) {
                         squaresAttacked = true;
                     }
                 }
@@ -82,16 +87,20 @@ public class King extends Piece {
             return false;
         }
 
-        return (!hasKingMoved && !hasRookMoved && !isKingChecked && !squaresAttacked && emptySquares);
+        return (!hasKingMoved && !hasRookMoved && !isKingChecked && !squaresAttacked && emptySquares && startsMatch);
     }
-    public boolean isLegalMove(Board board, int location) {
+    public boolean isLegalMove(Board board, Move move) {
+        int location = move.getEnd();
         boolean obstructedEnd = (board.getSquare(location).getColor() == this.getColor());
         int dX = Utility.getRC(location)[1] - Utility.getRC(this.getLocation())[1];
         int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(location)[0];
         boolean oneSquare = Math.abs(dX) <= 1 && Math.abs(dY) <= 1;
         boolean isSafe = board.isSafe(location, this.getColor());
+        boolean startsMatch = move.getStart() == this.getLocation();
+        boolean capture = (board.getSquare(move.getEnd()).getColor()) == 1 - this.getColor();
+        boolean correctCapture = capture == move.getCapture();
 
-        return ((oneSquare && !obstructedEnd && isSafe) || canCastle(board, location));
+        return ((oneSquare && !obstructedEnd && isSafe && startsMatch && correctCapture) || canCastle(board, move));
     }
 
     @Override

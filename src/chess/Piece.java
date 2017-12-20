@@ -13,11 +13,12 @@ public abstract class Piece {
 
     private int color;
     private int location;
-    private ArrayList<Integer> moves;
+    private ArrayList<Move> moves;
     private boolean captured;
     private boolean moved;
+    private String type;
 
-    public Piece(int color, int location) {
+    public Piece(String type, int color, int location) {
         this.color = color;
         this.location = location;
         this.captured = false;
@@ -30,7 +31,10 @@ public abstract class Piece {
     public int getLocation() {
         return this.location;
     }
-    ArrayList<Integer> getMoves() {
+    String getType() {
+        return this.type;
+    }
+    ArrayList<Move> getMoves() {
         return this.moves;
     }
     boolean isCaptured() {
@@ -42,25 +46,36 @@ public abstract class Piece {
     public void setMoved() {
         this.moved = true;
     }
+    void setType(String type) {
+        if (type.equals("King") || type.equals("Pawn") || type.equals("Queen") || type.equals("Rook")  || type.equals("Bishop")  || type.equals("Knight")) {
+            this.type = type;
+        } else {
+            throw new Exception("Invalid type cast");
+        }
+    }
 
-    @Nullable
     void updateMoves(Board board) {
-        ArrayList<Integer> newMoves = new ArrayList<>();
+        ArrayList<Move> newMoves = new ArrayList<>();
         if (this.isCaptured()) {
             this.moves = newMoves;
         } else {
             for (int i = 0; i < 64; i++) {
-                if (this.isLegalMove(board, i)) {
-                    moves.add(i);
+                if (this.isLegalMove(board, new Move(this, this.getLocation(), i))) {
+                    boolean capture = false, promotion = false;
+                    if (board.getSquare(i).getColor() == 1 - this.getColor()) {
+                        capture = true;
+                    }
+                    //TODO: add condition for promotion
+                    moves.add(new Move(this, this.getLocation(), i, capture, promotion));
                 }
             }
+            this.moves = newMoves;
         }
-        this.moves = newMoves;
     }
     public boolean isSafe() {
         for (Piece piece : Utility.pieces[1 - this.getColor()]) {
-            for (int move : piece.getMoves()) {
-                if (move == this.getLocation()) {
+            for (Move move : piece.getMoves()) {
+                if (move.getEnd() == this.getLocation()) {
                     return false;
                 }
             }
@@ -69,15 +84,14 @@ public abstract class Piece {
     }
     void getCaptured() {
         this.captured = true;
-        this.moves = new ArrayList<Integer>();
+        this.moves = new ArrayList<Move>();
         this.setLocation(-1);
     }
     boolean hasMoved() {
         return this.moved;
     }
 
-    @Nullable
-    abstract boolean isLegalMove(Board board, int location);
+    abstract boolean isLegalMove(Board board, Move move);
 
 
 }

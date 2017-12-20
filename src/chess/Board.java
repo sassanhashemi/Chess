@@ -2,6 +2,7 @@ package chess;
 
 import com.sun.istack.internal.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -9,6 +10,7 @@ public class Board {
 
     private Piece[] board = new Piece[64];
     private ArrayList<String> previousBoards;
+    private ArrayList<Move> previousMoves;
     private int numMoves;
     private int turn;
     private String gameState; // either "in progress", "black win", "white win", "draw"
@@ -24,6 +26,7 @@ public class Board {
             this.setSquare(i, Utility.nullPiece);
         }
         this.previousBoards = new ArrayList<String>();
+        this.previousMoves = new ArrayList<Move>();
         this.numMoves = 0;
         this.turn = Utility.WHITE;
         this.gameState = "in progress";
@@ -36,6 +39,9 @@ public class Board {
     }
     private ArrayList<String> getPreviousBoards() {
         return this.previousBoards;
+    }
+    ArrayList<Move> getPreviousMoves() {
+        return this.previousMoves;
     }
     public int getNumMoves() {
         return this.numMoves;
@@ -52,6 +58,9 @@ public class Board {
 
     private void appendPreviousBoards() {
         this.previousBoards.add(this.toString());
+    }
+    void appendPreviousMoves(Move move) {
+        this.previousMoves.add(move);
     }
     private void incrementNumMoves() {
         this.numMoves++;
@@ -123,8 +132,8 @@ public class Board {
     boolean isSafe(int location, int color) {
         for (Piece piece : Utility.pieces[1 - color]) {
             if (!piece.isCaptured()) {
-                for (int move : piece.getMoves()) {
-                    if (move == location) {
+                for (Move move : piece.getMoves()) {
+                    if (move.getEnd() == location) {
                         return false;
                     }
                 }
@@ -175,8 +184,8 @@ public class Board {
         kingCanMove = !(this.getSquare(kingLocation).getMoves().size() == 0);
 
         for (Piece piece : Utility.pieces[1 - color]) {
-            for (int move : piece.getMoves()) {
-                if (move == kingLocation) {
+            for (Move move : piece.getMoves()) {
+                if (move.getEnd() == kingLocation) {
                     checkingPieces.add(piece);
                 }
             }
@@ -188,17 +197,17 @@ public class Board {
 
         // Find possible captures or blocks
         for (Piece piece : Utility.pieces[color]) {
-            for (int move : piece.getMoves()) {
-                if (move == checkingPieces.get(0).getLocation()) {
+            for (Move move : piece.getMoves()) {
+                if (move.getEnd() == checkingPieces.get(0).getLocation()) {
                     canCapture = true;
                 }
             }
         }
 
         for (Piece piece : Utility.pieces[color]) {
-            for (int move : piece.getMoves()) {
+            for (Move move : piece.getMoves()) {
                 for (int square : Utility.squaresBetween(checkingPieces.get(0).getLocation(), kingLocation)) {
-                    if (move == square) {
+                    if (move.getEnd() == square) {
                         canBlock = true;
                     }
                 }
@@ -218,11 +227,13 @@ public class Board {
             }
         }
     }
-    boolean move(Piece piece, int location) {
+    boolean move(Move move) {
         boolean capture = false;
         boolean check = false;
+        Piece piece = move.getPiece();
+        int location = move.getEnd();
 
-        if (piece.isLegalMove(this, location)) {
+        if (piece.isLegalMove(this, move)) {
             this.appendPreviousBoards();                    // Save to prev boards
             if (this.getSquare(location) != null) {         // Update capture info
                 capture = true;

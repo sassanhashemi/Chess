@@ -153,16 +153,71 @@ public class ChessTest {
         assertEquals(0, size9);
     }
 
-    @Test
+    @Test   // COMPLETE
     public void testRookIsLegalMove() {
+        Board board = new Board();
+        Rook rook = (Rook) board.getSquare(56);
+        board.clear();
+        board.setSquare(56, rook);
+
+        Move move1 = new Move(rook, rook.getLocation(), 24); // Up 4: true
+        Move move2 = new Move(rook, rook.getLocation(), 59); // Right 3: true
+        Move move3 = new Move(rook, rook.getLocation(), 42); // Diagonal up right 2: false
+        Move move4 = new Move(rook, rook.getLocation(), 49, true); // diagonal up right 1 captures: false
+        Move move5 = new Move(rook, rook.getLocation(), 59, true); // Right 3 capture: true
+
+        assertEquals(true, rook.isLegalMove(board, move1));
+        assertEquals(true, rook.isLegalMove(board, move2));
+        assertEquals(false, rook.isLegalMove(board, move3));
+        board.setSquare(49, Utility.pieces[Utility.BLACK][3]);
+        assertEquals(false, rook.isLegalMove(board, move4));
+        board.setSquare(59, Utility.pieces[Utility.BLACK][3]);
+        assertEquals(true, rook.isLegalMove(board, move5));
+    }
+
+    @Test   // COMPLETE
+    public void testKingIsLegalMove() {
+        Board board = new Board();
+        King king = (King) board.getSquare(60);
+        board.clear();
+        board.setSquare(60, king);
+
+        Move move1 = new Move(king, king.getLocation(), 52); // Up 1: true
+        Move move2 = new Move(king, king.getLocation(), 61); // Right 1: true
+        Move move3 = new Move(king, king.getLocation(), 59); // Left 1: true
+        Move move4 = new Move(king, king.getLocation(), 53); // Up Right 1: true
+        Move move5 = new Move(king, king.getLocation(), 44); // Up 2: false
+        Move move6 = new Move(king, king.getLocation(), 62); // Right 2: false
+        Move move7 = new Move(king, king.getLocation(), 52, true); // Up 1 capture: true
+        Move move8 = new Move(king, king.getLocation(), 59, true); // Up Left 1 capture
+
+        assertEquals(true, king.isLegalMove(board, move1));
+        assertEquals(true, king.isLegalMove(board, move2));
+        assertEquals(true, king.isLegalMove(board, move3));
+        assertEquals(true, king.isLegalMove(board, move4));
+        assertEquals(false, king.isLegalMove(board, move5));
+        assertEquals(false, king.isLegalMove(board, move6));
+        board.setSquare(52, Utility.pieces[Utility.BLACK][3]);
+        assertEquals(true, king.isLegalMove(board, move7));
+        board.setSquare(59, Utility.pieces[Utility.BLACK][3]);
+        assertEquals(true, king.isLegalMove(board, move8));
+    }
+
+    @Test
+    public void testStringToMove() {
+        Board board = new Board();
+        Move move1 = Utility.stringToMove("Nf3");
+        Move move2 = Utility.stringToMove("Nxf3");
+        Move move3 = Utility.stringToMove("Rae1");
+        Move move4 = Utility.stringToMove("Raxe1");
+        Move move5 = Utility.stringToMove("0-0");
+        Move move6 = Utility.stringToMove("0-0-0");
+
 
 
 
 
     }
-
-
-
 
 
 }

@@ -1,5 +1,6 @@
 package chess;
 
+import javax.rmi.CORBA.Util;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -135,20 +136,18 @@ class Utility {
         return squares;
     }
 
-
-    static int moveToLocation(String move) {
-        int num = (8 - Integer.parseInt(move.substring(2, 3))) * 8;
-        int letter = move.charAt(1) - 97;
-        return num + letter;
-
-    }
-    static Piece moveToPiece(Board board, String move) {
-        int num = (8 - Integer.parseInt(move.substring(2, 3))) * 8;
-        int letter = move.charAt(1) - 97;
-        int location = num + letter;
-        return board.getSquare(location);
-    }
     static String getMove(int turn) {
+        /*
+         * Nf3
+         * Nxf3
+         * Rae3
+         * Raxe2
+         * exd6e.p en passant
+         * e8=Q
+         * exd8=N
+         * 0-0
+         * 0-0-0
+         */
         String move = "";
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         if (turn == Utility.WHITE) {
@@ -165,6 +164,85 @@ class Utility {
         //TODO: convert string to move
         return move;
     }
+
+    //TODO: Add promotion
+    //TODO: Fix Rae1
+    static Move stringToMove(String moveStr, int turn) throws Exception {
+        ArrayList<Piece> possiblePieces = new ArrayList<Piece>();
+        Piece piece = nullPiece;
+        String pieceType = "";
+        int pawnFile = -1;
+        char pieceChar = moveStr.charAt(0);
+        switch (pieceChar) {
+            case 'N':
+                pieceType = "Knight";
+                break;
+            case 'K':
+                pieceType = "King";
+                break;
+            case 'R':
+                pieceType = "Rook";
+                break;
+            case 'B':
+                pieceType = "Bishop";
+                break;
+            case 'Q':
+                pieceType = "Queen";
+                break;
+            case 'a':
+            case 'b':
+            case 'c':
+            case 'd':
+            case 'e':
+            case 'f':
+            case 'g':
+            case 'h':
+                pieceType = "Pawn";
+                pawnFile = pieceChar - 97;
+                break;
+        }
+
+        boolean capture = moveStr.charAt(1) == 'x' || moveStr.charAt(2) == 'x';
+        int capture1 = (moveStr.charAt(1) == 'x') ? 1 : 0;
+        int capture2 = (moveStr.charAt(2) == 'x') ? 1 : 0;
+        int captureInt = capture1 + capture2;
+        int letter = moveStr.charAt(1 + captureInt) - 97;
+        int number = 8 - moveStr.charAt(2 + captureInt);
+        int location = 8 * number + letter;
+
+        for (Piece currPiece : pieces[turn]) {
+            if (currPiece.getType().equals(pieceType) && !currPiece.isCaptured()) {
+                for (Move move : currPiece.getMoves()) {
+                    if (move.getEnd() == location) {
+                        possiblePieces.add(currPiece);
+                    }
+                }
+            }
+        }
+
+        if (possiblePieces.size() > 1) {
+            Piece piece1 = possiblePieces.get(0);
+            Piece piece2 = possiblePieces.get(1);
+            if (piece1.getLocation() / 8 == piece2.getLocation() / 8) {         // Same Row
+                int let = moveStr.charAt(1) - 97;
+            } else if (piece1.getLocation() % 8 == piece2.getLocation() % 8) {  // Same column
+                int num = moveStr.charAt(1) - 49;
+                if ((num < 0 || num >= 8)) {
+                    throw new Exception("Invalid column number");
+                }
+            }
+        } else {
+            piece = possiblePieces.get(0);
+        }
+
+        if (piece == nullPiece) {
+            throw new Exception("Invalid move");
+        }
+
+        return new Move(piece, piece.getLocation(), location, capture);
+    }
+
+
     //public static Board toBoard(String board);
     //public static void promote(Pawn pawn, Piece piece);
 

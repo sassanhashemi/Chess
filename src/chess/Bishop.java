@@ -14,7 +14,7 @@ public class Bishop extends Piece {
         boolean startsMatch = move.getStart() == this.getLocation();
         if (Utility.squaresBetween(this.getLocation(), move.getEnd()).size() > 0) {
             for (int square : Utility.squaresBetween(this.getLocation(), move.getEnd())) {
-                if (board.getSquare(square) != null) {
+                if (!(board.getSquare(square) instanceof NullPiece)) {
                     obstructedPath = true;
                 }
             }

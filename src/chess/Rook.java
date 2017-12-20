@@ -11,11 +11,11 @@ public class Rook extends Piece {
         boolean obstructedEnd = (board.getSquare(location).getColor() == this.getColor());
         int dX = Utility.getRC(location)[1] - Utility.getRC(this.getLocation())[1];
         int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(location)[0];
-        boolean rightDirection = (Math.abs(dX - dY) == 0);
+        boolean rightDirection = (dX == 0 || dY == 0);
         boolean obstructedPath = false;
         boolean startsMatch = move.getStart() == this.getLocation();
         for (int square : Utility.squaresBetween(this.getLocation(), location)) {
-            if (board.getSquare(square) != null) {
+            if (!(board.getSquare(square) instanceof NullPiece)) {
                 obstructedPath = true;
             }
         }

@@ -15,6 +15,7 @@ public class Board {
     private int turn;
     private String gameState; // either "in progress", "black win", "white win", "draw"
     private int mslcopa; // moves since last capture or pawn advance
+    private boolean check;
 
     Board() {
         for (int i = 0; i < 2; i++) {
@@ -31,6 +32,7 @@ public class Board {
         this.turn = Utility.WHITE;
         this.gameState = "in progress";
         this.mslcopa = 0;
+        this.check = false;
         //this.updateAllMoves();
     }
 
@@ -55,6 +57,9 @@ public class Board {
     public int getMslcopa() {
         return this.mslcopa;
     }
+    boolean getCheck() {
+        return this.check;
+    }
 
     private void appendPreviousBoards() {
         this.previousBoards.add(this.toString());
@@ -78,6 +83,9 @@ public class Board {
     }
     private void resetMslcopa() {
         this.mslcopa = 0;
+    }
+    void setCheck(boolean check) {
+        this.check = check;
     }
 
     void clear() {
@@ -228,15 +236,14 @@ public class Board {
         }
     }
     boolean move(Move move) {
-        boolean capture = false;
+        boolean capture =  move.getCapture();
         boolean check = false;
         Piece piece = move.getPiece();
         int location = move.getEnd();
 
         if (piece.isLegalMove(this, move)) {
             this.appendPreviousBoards();                    // Save to prev boards
-            if (this.getSquare(location) != null) {         // Update capture info
-                capture = true;
+            if (capture) {                                  // Update capture info
                 this.getSquare(location).getCaptured();
             }
             this.setSquare(piece.getLocation(), null);        // Change piece and board locations
@@ -259,6 +266,19 @@ public class Board {
         } else {
             return false;
         }
+    }
+
+    //TODO: CREATE METHOD
+    boolean undoMove() {
+        if (this.getNumMoves() == 0) {
+            return false;
+        }
+        Move move = this.previousMoves.get(this.previousMoves.size() - 1);
+        this.previousMoves.remove(this.previousMoves.size() - 1);
+
+
+
+        return true;
     }
 
     @Override

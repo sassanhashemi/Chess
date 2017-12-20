@@ -159,7 +159,7 @@ class Utility {
         try {
             move = reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.toString());
         }
         //TODO: convert string to move
         return move;
@@ -167,7 +167,7 @@ class Utility {
 
     //TODO: Add promotion
     //TODO: Fix Rae1
-    static Move stringToMove(String moveStr, int turn) throws Exception {
+    static Move stringToMove(String moveStr, int turn) throws ChessException {
         ArrayList<Piece> possiblePieces = new ArrayList<Piece>();
         Piece piece = nullPiece;
         String pieceType = "";
@@ -228,7 +228,7 @@ class Utility {
             } else if (piece1.getLocation() % 8 == piece2.getLocation() % 8) {  // Same column
                 int num = moveStr.charAt(1) - 49;
                 if ((num < 0 || num >= 8)) {
-                    throw new Exception("Invalid column number");
+                    throw new ChessException("Invalid column number");
                 }
             }
         } else {
@@ -236,7 +236,7 @@ class Utility {
         }
 
         if (piece == nullPiece) {
-            throw new Exception("Invalid move");
+            throw new ChessException("Invalid move");
         }
 
         return new Move(piece, piece.getLocation(), location, capture);

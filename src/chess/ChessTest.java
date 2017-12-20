@@ -206,8 +206,8 @@ public class ChessTest {
     @Test
     public void testStringToMove() {
         Board board = new Board();
-        Move move1 = Utility.stringToMove("Nf3");
-        Move move2 = Utility.stringToMove("Nxf3");
+        Move move1 = Utility.stringToMove("Nf3", Utility.WHITE);
+        Move move2 = Utility.stringToMove("Nxf3", Utility.WHITE);
         Move move3 = Utility.stringToMove("Rae1");
         Move move4 = Utility.stringToMove("Raxe1");
         Move move5 = Utility.stringToMove("0-0");

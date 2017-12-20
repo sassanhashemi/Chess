@@ -10,18 +10,18 @@ public class Game {
 
     public static void main(String[] args) {
 
-        System.out.println("Hi");
         Board board = new Board();
+        while (board.getGameState().equals("in progress")) {
 
-        System.out.println("Hello World");
+            try {
+                Move move = Utility.stringToMove(Utility.getMove(board.getTurn()), board.getTurn());
+                board.move(move);
+            } catch (ChessException e){
+                System.out.println(e.toString());
+            }
+        }
 
-        /*
-        Move move = Utility.getMove(board.getTurn());
-        int location = Utility.moveToLocation(move);
-        Piece piece = Utility.moveToPiece(board, move);
-        System.out.println(piece.isLegalMove(board, move));
-        board.move(piece, move);
-        */
+
 
 
         //while (board.getGameState().equals("in progress")) {

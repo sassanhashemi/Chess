@@ -1,5 +1,7 @@
 package chess;
 
+//TODO: Add check to constructors
+
 class Move {
 
     private Piece piece;
@@ -7,6 +9,7 @@ class Move {
     private int end;
     private boolean capture;
     private boolean promotion;
+    private boolean check;
 
     Move(Piece piece, int start, int end, boolean capture, boolean promotion) {
         this.piece = piece;
@@ -48,6 +51,9 @@ class Move {
     boolean getPromotion() {
         return this.promotion;
     }
+    boolean getCheck() {
+        return this.check;
+    }
     void setStart(int start) {
         this.start = start;
     }
@@ -60,8 +66,10 @@ class Move {
     void setCapture(boolean capture) {
         this.capture = capture;
     }
-    void setPromotion() {
+    void setPromotion(boolean promotion) {
         this.promotion = promotion;
     }
-
+    void setCheck(boolean check) {
+        this.check = check;
+    }
 }

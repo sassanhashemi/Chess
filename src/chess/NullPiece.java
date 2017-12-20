@@ -4,7 +4,7 @@ public class NullPiece extends Piece {
 
 
     NullPiece() {
-        super(Utility.EMPTY, Utility.EMPTY);
+        super("null", Utility.EMPTY, Utility.EMPTY);
     }
 
     boolean isLegalMove(Board board, Move move) {

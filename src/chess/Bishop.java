@@ -3,7 +3,7 @@ package chess;
 public class Bishop extends Piece {
 
     Bishop(int color, int location) {
-        super(color, location);
+        super("Bishop", color, location);
     }
     public boolean isLegalMove(Board board, Move move) {
         boolean obstructedEnd = (board.getSquare(move.getEnd()).getColor() == this.getColor());

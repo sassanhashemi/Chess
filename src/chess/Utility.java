@@ -18,6 +18,7 @@ class Utility {
     final static int K = 0;
     final static int R1 = 2;
     final static int R2 = 3;
+    final static int B1 = 4;
     /*
     public final static int Q = 1;
     public final static int B1 = 4;
@@ -95,7 +96,7 @@ class Utility {
         boolean vertical = (startCol == endCol);
         boolean horizontal = (startRow == endRow);
         boolean diagonal = (java.lang.Math.abs(endRow - startRow) == Math.abs(endCol - startCol));
-        int dY = endRow - startRow;
+        int dY = startRow - endRow;
         int dX = endCol - startCol;
 
         if (vertical && dY > 1) {                   // Up

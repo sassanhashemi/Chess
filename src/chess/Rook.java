@@ -4,7 +4,7 @@ public class Rook extends Piece {
 
 
     Rook(int color, int location) {
-        super(color, location);
+        super("Rook", color, location);
     }
     public boolean isLegalMove(Board board, Move move) {
         int location = move.getEnd();

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class ChessTest {
 
-    @Test
+    @Test   // COMPLETE
     public void testGameState() {
         // Test 1: in progress
         Board board = new Board();
@@ -14,8 +14,7 @@ public class ChessTest {
         assertEquals("in progress", board.getGameState());
     }
 
-
-    @Test
+    @Test   // COMPLETE
     public void testClearBoard() {
         Board board = new Board();
         board.clear();
@@ -25,14 +24,19 @@ public class ChessTest {
 
     }
 
-    //TODO: Add a test to test for true
-    @Test
+    @Test   // COMPLETE
     public void testInsufficientMaterial() {
         Board board = new Board();
         assertEquals(false, board.insufficientMaterial());
+        board.clear();
+        assertEquals(true, board.insufficientMaterial());
+        board.setSquare(0, Utility.pieces[Utility.WHITE][Utility.K]);
+        board.setSquare(0, Utility.pieces[Utility.BLACK][Utility.K]);
+        board.setSquare(0, Utility.pieces[Utility.WHITE][Utility.B1]);
+        assertEquals(true, board.insufficientMaterial());
     }
 
-    @Test
+    @Test   // COMPLETE
     public void testPawnIsLegalMove() {
         Board board = new Board();
         Pawn pawn = (Pawn) board.getSquare(48);
@@ -60,7 +64,7 @@ public class ChessTest {
         //TODO: test promotion
     }
 
-    @Test
+    @Test   // COMPLETE
     public void testKnightIsLegalMove() {
         Board board = new Board();
         Knight knight = (Knight) board.getSquare(57);
@@ -76,7 +80,7 @@ public class ChessTest {
         //TODO: test move outside of board range
     }
 
-    @Test
+    @Test   // COMPLETE
     public void testBishopIsLegalMove() {
         Board board = new Board();
         Bishop bishop = (Bishop) board.getSquare(58);
@@ -100,20 +104,19 @@ public class ChessTest {
 
     }
 
-    @Test
+    @Test   // COMPLETE
     public void testQueenIsLegalMove() {
         Board board = new Board();
         Queen queen = (Queen) board.getSquare(59);
         queen.setLocation(60);
         board.clear();
         board.setSquare(60, queen);
-        System.out.println(board.toString());
 
         Move move1 = new Move(queen, queen.getLocation(), 28); // Up 4: true
         Move move2 = new Move(queen, queen.getLocation(), 57); // Left 3: true
-        Move move3 = new Move(queen, queen.getLocation(), 36); // Diagonal up right 2: false
-        Move move4 = new Move(queen, queen.getLocation(), 28); // Bc1-e5: false
-        Move move5 = new Move(queen, queen.getLocation(), 51, true); // diagonal up right 1 captures: true
+        Move move3 = new Move(queen, queen.getLocation(), 37); // Diagonal up right 2: false
+        Move move4 = new Move(queen, queen.getLocation(), 27); // e1 - d5
+        Move move5 = new Move(queen, queen.getLocation(), 51, true); // diagonal up left 1 captures: true
         Move move6 = new Move(queen, queen.getLocation(), 39); // diagonal up right 3 with piece between: false
 
         assertEquals(true, queen.isLegalMove(board, move1));
@@ -125,5 +128,41 @@ public class ChessTest {
         board.setSquare(46, Utility.pieces[Utility.BLACK][3]);
         assertEquals(false, queen.isLegalMove(board, move6));
     }
+
+    @Test   // COMPLETE
+    public void testSquaresBetween() {
+        Board board = new Board();
+        int size1 = Utility.squaresBetween(0, 32).size(); // Down: 3
+        int size2 = Utility.squaresBetween(0, 7).size(); // Right: 6
+        int size3 = Utility.squaresBetween(63, 58).size(); // Left: 4
+        int size4 = Utility.squaresBetween(32, 0).size(); // Up: 3
+        int size5 = Utility.squaresBetween(0, 27).size(); // Right Down: 2
+        int size6 = Utility.squaresBetween(56, 28).size(); // Right Up: 3
+        int size7 = Utility.squaresBetween(28, 56).size(); // Left Down: 3
+        int size8 = Utility.squaresBetween(27, 0).size(); // Left Up: 2
+        int size9 = Utility.squaresBetween(0, 1).size(); // Nowhere: 0
+
+        assertEquals(3, size1);
+        assertEquals(6, size2);
+        assertEquals(4, size3);
+        assertEquals(3, size4);
+        assertEquals(2, size5);
+        assertEquals(3, size6);
+        assertEquals(3, size7);
+        assertEquals(2, size8);
+        assertEquals(0, size9);
+    }
+
+    @Test
+    public void testRookIsLegalMove() {
+
+
+
+
+    }
+
+
+
+
 
 }

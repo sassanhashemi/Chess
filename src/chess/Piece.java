@@ -46,11 +46,11 @@ public abstract class Piece {
     public void setMoved() {
         this.moved = true;
     }
-    void setType(String type) {
+    void setType(String type) throws Exception {
         if (type.equals("King") || type.equals("Pawn") || type.equals("Queen") || type.equals("Rook")  || type.equals("Bishop")  || type.equals("Knight")) {
             this.type = type;
         } else {
-            throw new Exception("Invalid type cast");
+            throw new Exception("Invalid type");
         }
     }
 

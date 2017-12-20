@@ -3,7 +3,7 @@ package chess;
 public class Knight extends Piece {
 
     public Knight(int color, int location) {
-        super(color, location);
+        super("Knight", color, location);
     }
     public boolean isLegalMove(Board board, Move move) {
         int location = move.getEnd();

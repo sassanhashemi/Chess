@@ -6,7 +6,7 @@ package chess;
 public class King extends Piece {
 
     public King(int color, int location) {
-        super(color, location);
+        super("King", color, location);
     }
 
     private boolean canCastle(Board board, Move move) {

@@ -5,7 +5,7 @@ import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 public class Pawn extends Piece {
 
     Pawn(int color, int location) {
-        super(color, location);
+        super("Pawn", color, location);
     }
     private boolean canCapture(Board board, Move move) {
         int location = move.getEnd();

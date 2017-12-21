@@ -220,6 +220,7 @@ class Utility {
             }
         }
 
+        //TODO: Finish this
         if (possiblePieces.size() > 1) {
             Piece piece1 = possiblePieces.get(0);
             Piece piece2 = possiblePieces.get(1);

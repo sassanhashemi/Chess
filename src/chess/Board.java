@@ -153,7 +153,7 @@ public class Board {
         if (location >= 0 && location < 64) {
             return this.board[location];
         } else {
-            return null;
+            throw new ChessException("Invalid square number");
         }
 
     }
@@ -237,7 +237,7 @@ public class Board {
     }
     boolean move(Move move) {
         boolean capture =  move.getCapture();
-        boolean check = false;
+        boolean check = move.getCheck();
         Piece piece = move.getPiece();
         int location = move.getEnd();
 

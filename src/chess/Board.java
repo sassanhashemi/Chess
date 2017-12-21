@@ -45,8 +45,13 @@ public class Board {
     ArrayList<Move> getPreviousMoves() {
         return this.previousMoves;
     }
-    public int getNumMoves() {
-        return this.numMoves;
+    public int getNumMoves() throws ChessException {
+        if (numMoves > 0) {
+            return this.numMoves;
+        } else {
+            throw new ChessException("Number of moves is < 0");
+        }
+
     }
     int getTurn() {
         return this.turn;
@@ -73,9 +78,11 @@ public class Board {
     private void incrementTurn() {
         this.turn = 1 - this.turn;
     }
-    void setGameState(String gameState) {
+    void setGameState(String gameState) throws ChessException {
         if (gameState.equals("in progress") || gameState.equals("white win") || gameState.equals("black win") || gameState.equals("draw")) {
             this.gameState = gameState;
+        } else {
+            throw new ChessException("Invalid gameState");
         }
     }
     private void incrementMslcopa() {
@@ -149,7 +156,7 @@ public class Board {
         }
         return true;
     }
-    Piece getSquare(int location) {
+    Piece getSquare(int location) throws ChessException {
         if (location >= 0 && location < 64) {
             return this.board[location];
         } else {
@@ -157,8 +164,13 @@ public class Board {
         }
 
     }
-    void setSquare(int location, Piece piece) {
-        this.board[location] = piece;
+    void setSquare(int location, Piece piece) throws ChessException {
+        if (location < 64 && location >= 0) {
+            this.board[location] = piece;
+        } else {
+            throw new ChessException("Invalid location number");
+        }
+
     }
     private void updateGameState() {
         if (this.isDraw()) {

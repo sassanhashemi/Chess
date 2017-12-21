@@ -3,8 +3,6 @@ package chess;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import javax.rmi.CORBA.Util;
-
 public class ChessTest {
 
     @Test   // COMPLETE
@@ -177,7 +175,7 @@ public class ChessTest {
         assertEquals(true, rook.isLegalMove(board, move5));
     }
 
-    @Test   // COMPLETE
+    @Test   // TODO: UNFINISHED
     public void testKingIsLegalMove() {
         Board board = new Board();
         King king = (King) board.getSquare(60);
@@ -231,11 +229,33 @@ public class ChessTest {
         assertEquals(4, Utility.getRC(28)[1]);
     }
 
+    @Test   // COMPLETE
+    public void testTempStringToMove() {
+        Board board = new Board();
+
+        Move move1 = Utility.tempStringToMove(board, "d2-d4", Utility.WHITE);
+        Move move2 = Utility.tempStringToMove(board, "b1-c3", Utility.WHITE);
+
+        assertEquals(51, move1.getStart());
+        assertEquals(35, move1.getEnd());
+        assertEquals(true, move1.getPiece() instanceof Pawn);
+        assertEquals(false, move1.getCapture());
+        assertEquals(57, move2.getStart());
+        assertEquals(42, move2.getEnd());
+        assertEquals(true, move2.getPiece() instanceof Knight);
+        assertEquals(false, move2.getCapture());
+    }
+
+    @Test
+    public void testUpdateAllMoves() {
+        
+    }
 
 
 
     //TO TEST
     /*
+     * public void testUpdateAllMoves
      * public void testBoardRepetition
      * public void testNoLegalMoves
      * public void testIsCheckMated
@@ -244,5 +264,5 @@ public class ChessTest {
      * public void testUndoMove
      * promotion and en passant
      */
-    
+
 }

@@ -243,6 +243,15 @@ class Utility {
         return new Move(piece, piece.getLocation(), location, capture);
     }
 
+    static Move tempStringToMove(Board board, String moveStr, int turn) throws ChessException {
+        // Move in format e2-e4
+        int start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
+        int end = (moveStr.charAt(3) - 97) + 8 * (8 - (moveStr.charAt(4) - 48));
+        Piece piece = board.getSquare(start);
+        boolean capture = board.getSquare(end).getColor() == 1 - piece.getColor();
+        return new Move(piece, start, end, capture);
+    }
+
 
     //public static Board toBoard(String board);
     //public static void promote(Pawn pawn, Piece piece);

@@ -1,6 +1,7 @@
 package chess;
 
 //TODO: Add check to constructors
+import java.lang.StringBuilder;
 
 class Move {
 
@@ -71,5 +72,26 @@ class Move {
     }
     void setCheck(boolean check) {
         this.check = check;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("");
+        //result.append("Start: ", (String) this.getStart());
+        result.append("Piece: ");
+        result.append(this.getPiece().toString());
+        result.append("\n");
+        result.append("Start: ");
+        result.append(this.getStart());
+        result.append("\n");
+        result.append("End: ");
+        result.append(this.getEnd());
+        result.append("\n");
+        result.append("Capture: ");
+        result.append(this.getCapture());
+        result.append("\n");
+        result.append("Promotion: ");
+        result.append(this.getPromotion());
+        return result.toString();
     }
 }

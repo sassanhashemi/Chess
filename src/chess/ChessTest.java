@@ -1,5 +1,7 @@
 package chess;
 
+//TODO: CHeck knight is legal move and pawn is legal move
+
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -40,6 +42,8 @@ public class ChessTest {
     public void testPawnIsLegalMove() {
         Board board = new Board();
         Pawn pawn = (Pawn) board.getSquare(48);
+        Pawn pawn2 = (Pawn) board.getSquare(12);
+        Pawn whiteE = (Pawn) board.getSquare(52);
 
         Move move1 = new Move(pawn, pawn.getLocation(), 40); // Advance 1
         Move move2 = new Move(pawn, pawn.getLocation(), 32); // Advance 2
@@ -48,7 +52,8 @@ public class ChessTest {
         Move move5 = new Move(pawn, pawn.getLocation(), 41, true); // Capture a piece
         Move move6 = new Move(pawn, pawn.getLocation(), 40); // Advance 1 with blocked square
         Move move7 = new Move(pawn, pawn.getLocation(), 32); // Advance 2 with blocked square
-
+        Move move8 = new Move(pawn2, pawn2.getLocation(), 28);
+        Move move9 = new Move(whiteE, whiteE.getLocation(), 36);
 
         assertEquals(true, pawn.isLegalMove(board, move1));
         assertEquals(true, pawn.isLegalMove(board, move2));
@@ -60,6 +65,9 @@ public class ChessTest {
         assertEquals(false, pawn.isLegalMove(board, move6));
         board.setSquare(32, Utility.pieces[Utility.BLACK][3]);
         assertEquals(false, pawn.isLegalMove(board, move7));
+        assertEquals(true, whiteE.isLegalMove(board, move9));
+        board.move(move9);
+        assertEquals(true, pawn2.isLegalMove(board, move8));
         //TODO: test capturing en passant
         //TODO: test promotion
     }
@@ -77,6 +85,13 @@ public class ChessTest {
         assertEquals(false, knight.isLegalMove(board, move2)); // Nd2 first move
         board.setSquare(42, Utility.pieces[Utility.BLACK][3]);
         assertEquals(true, knight.isLegalMove(board, move3)); // Capture a piece Nc3
+
+        Knight knight2 = (Knight) board.getSquare(62);
+        Move move4 = new Move(knight2, knight2.getLocation(), 47);
+        Move move5 = new Move(knight2, knight2.getLocation(), 45);
+        assertEquals(true, knight2.isLegalMove(board, move4));
+        assertEquals(true, knight2.isLegalMove(board, move5));
+
         //TODO: test move outside of board range
     }
 
@@ -127,6 +142,12 @@ public class ChessTest {
         assertEquals(true, queen.isLegalMove(board, move5));
         board.setSquare(46, Utility.pieces[Utility.BLACK][3]);
         assertEquals(false, queen.isLegalMove(board, move6));
+
+        Board board2 = new Board();
+        board2.setSquare(45, queen);
+        queen.setLocation(45);
+        Move move7 = new Move(queen, 45, 13, true);
+        assertEquals(true, queen.isLegalMove(board2, move7));
     }
 
     @Test   // COMPLETE
@@ -233,8 +254,8 @@ public class ChessTest {
     public void testTempStringToMove() {
         Board board = new Board();
 
-        Move move1 = Utility.tempStringToMove(board, "d2-d4", Utility.WHITE);
-        Move move2 = Utility.tempStringToMove(board, "b1-c3", Utility.WHITE);
+        Move move1 = Utility.tempStringToMove(board, "d2-d4");
+        Move move2 = Utility.tempStringToMove(board, "b1-c3");
 
         assertEquals(51, move1.getStart());
         assertEquals(35, move1.getEnd());
@@ -248,20 +269,97 @@ public class ChessTest {
 
     @Test
     public void testUpdateAllMoves() {
-        
+        Board board = new Board();
+        board.updateAllMoves();
     }
 
+    @Test   // COMPLETE
+    public void testUpdateMoves() {
+        Board board = new Board();
+        Knight knight = (Knight) board.getSquare(57);
+        knight.updateMoves(board);
+        for (Move move : knight.getMoves()) {
+            System.out.println(move.getEnd());
+        }
+    }
 
+    @Test   // COMPLETE
+    public void testBoardToString() {
+        Board board = new Board();
+        System.out.println(board.toString());
+        board.clear();
+        System.out.println(board.toString());
+    }
+
+    @Test   // COMPLETE
+    public void testBoardRepetition() {
+        Board board = new Board();
+        assertEquals(false, board.boardRepetitionDraw());
+        board.appendPreviousBoards();
+        board.appendPreviousBoards();
+        board.appendPreviousBoards();
+        assertEquals(true, board.boardRepetitionDraw());
+    }
+
+    //TODO: test true case
+    @Test
+    public void testNoLegalMoves() {
+        Board board = new Board();
+        board.updateAllMoves();
+        Move move1 = new Move(board.getSquare(52), 52, 36);
+        Move move2 = new Move(board.getSquare(12), 12, 28);
+        Move move3 = new Move(board.getSquare(62), 62, 45);
+        Move move4 = new Move(board.getSquare(1), 1, 18);
+
+        board.move(move1);
+        board.move(move2);
+        board.move(move3);
+        board.move(move4);
+        assertEquals(false, board.noLegalMoves(board.getTurn()));
+    }
+
+    @Test   //TODO: Test update moves, mslcopa...
+    public void testMove() {
+        Board board = new Board();
+        Move move1 = new Move(board.getSquare(52), 52, 36);
+        Move move2 = new Move(board.getSquare(12), 12, 28);
+        Move move3 = new Move(board.getSquare(62), 62, 45);
+        Move move4 = new Move(board.getSquare(1), 1, 18);
+        board.move(move1);
+        board.move(move2);
+        board.move(move3);
+        board.move(move4);
+    }
+
+    @Test
+    public void testIsCheckMated() {
+        Board board = new Board();
+        assertEquals(false, board.isCheckMated(board.getTurn()));
+
+        Move e4 = new Move(board.getSquare(52), 52, 36);
+        Move e5 = new Move(board.getSquare(12), 12, 28);
+        Move Bc4 = new Move(board.getSquare(61), 61, 34);
+        Move a4 = new Move(board.getSquare(8), 8, 24);
+        Move Qf3 = new Move(board.getSquare(59), 59, 45);
+        Move Nc6 = new Move(board.getSquare(1), 1, 18);
+        Move Qf7 = new Move(board.getSquare(45), 45, 13, true);
+
+        board.move(e4);
+        board.move(e5);
+        //board.move(Bc4);
+        //board.move(a4);
+        board.move(Qf3);
+        board.move(Nc6);
+        board.move(Qf7);
+
+        assertEquals(true, board.isCheckMated(board.getTurn()));
+    }
 
     //TO TEST
     /*
-     * public void testUpdateAllMoves
-     * public void testBoardRepetition
-     * public void testNoLegalMoves
      * public void testIsCheckMated
-     * public void testIsDraw
-     * public void testMove
      * public void testUndoMove
+     * public void testStringToBoard
      * promotion and en passant
      */
 

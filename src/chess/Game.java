@@ -12,18 +12,23 @@ public class Game {
     public static void main(String[] args) {
 
         Board board = new Board();
-        try {
-            Move move = Utility.tempStringToMove(board, Utility.getMove(board.getTurn()), board.getTurn());
-            board.move(move);
-        } catch (ChessException e){
-            System.out.println(e.toString());
+
+        while (board.getGameState().equals("in progress")) {
+            try {
+                Move move = Utility.tempStringToMove(board);
+                board.move(move);
+            } catch (ChessException e){
+                System.out.println(e.toString());
+            }
+            System.out.println(board.getGameState());
+            System.out.println(board.toString());
+
+
         }
 
         System.out.println("Done");
-        while (board.getGameState().equals("in progress")) {
+        System.out.println(board.toString());
 
-
-        }
 
 
 

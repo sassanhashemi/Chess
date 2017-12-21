@@ -20,6 +20,11 @@ public class Queen extends Piece {
         }
         boolean capture = (board.getSquare(move.getEnd()).getColor()) == 1 - this.getColor();
         boolean correctCapture = capture == move.getCapture();
+
+        if (move.getStart() == 45 && move.getEnd() == 13) {
+            System.out.println((rightDirection && !obstructedEnd && !obstructedPath && startsMatch && correctCapture));
+        }
+
         return (rightDirection && !obstructedEnd && !obstructedPath && startsMatch && correctCapture);
     }
 

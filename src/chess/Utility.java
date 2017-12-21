@@ -136,6 +136,7 @@ class Utility {
         return squares;
     }
 
+    //TODO: Keep asking until a valid move is given
     static String getMove(int turn) {
         /*
          * Nf3
@@ -243,17 +244,49 @@ class Utility {
         return new Move(piece, piece.getLocation(), location, capture);
     }
 
-    static Move tempStringToMove(Board board, String moveStr, int turn) throws ChessException {
+    static Move tempStringToMove(Board board) throws ChessException {
+        // Move in format e2-e4
+        String moveStr = Utility.getMove(board.getTurn());
+        int start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
+        int end = (moveStr.charAt(3) - 97) + 8 * (8 - (moveStr.charAt(4) - 48));
+        Piece piece = board.getSquare(start);
+        boolean capture = board.getSquare(end).getColor() == 1 - piece.getColor();
+        Move move = new Move(piece, start, end, capture);
+        while (!piece.isLegalMove(board, move)) {
+            moveStr = Utility.getMove(board.getTurn());
+            start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
+            end = (moveStr.charAt(3) - 97) + 8 * (8 - (moveStr.charAt(4) - 48));
+            piece = board.getSquare(start);
+            capture = board.getSquare(end).getColor() == 1 - piece.getColor();
+            move = new Move(piece, start, end, capture);
+        }
+        return new Move(piece, start, end, capture);
+
+    }
+
+    static Move tempStringToMove(Board board, String moveStr) {
         // Move in format e2-e4
         int start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
         int end = (moveStr.charAt(3) - 97) + 8 * (8 - (moveStr.charAt(4) - 48));
         Piece piece = board.getSquare(start);
         boolean capture = board.getSquare(end).getColor() == 1 - piece.getColor();
-        return new Move(piece, start, end, capture);
+        Move move = new Move(piece, start, end, capture);
+
+        return move;
+
     }
 
 
-    //public static Board toBoard(String board);
+    /*
+    public static Board toBoard(String boardStr) {
+        Board board = new Board();
+        Board
+        board.clear();
+        for (int i = 0; i < 64; i++) {
+            Piece piece = boar
+        }
+    }
+    */
     //public static void promote(Pawn pawn, Piece piece);
 
 }

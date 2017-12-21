@@ -26,7 +26,7 @@ public class Pawn extends Piece {
         int dX = Utility.getRC(location)[1] - Utility.getRC(this.getLocation())[1];
         int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(location)[0];
         boolean legalAdvanceOne = (dX == 0) && (dY/direction == 1);
-        boolean legalAdvanceTwo = ((Utility.getRC(location)[0] - (0.5 * direction) == 3.5) && (dX == 0) && (board.getSquare(location - 8 * direction) instanceof NullPiece));
+        boolean legalAdvanceTwo = ((Utility.getRC(location)[0] - (0.5 * direction) == 3.5) && (dX == 0) && (board.getSquare(location + 8 * direction) instanceof NullPiece));
         boolean startsMatch = this.getLocation() == move.getStart();
         return (!obstructedEnd && (legalAdvanceOne || legalAdvanceTwo) && startsMatch);
     }

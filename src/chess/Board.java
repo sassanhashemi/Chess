@@ -2,6 +2,7 @@ package chess;
 
 import com.sun.istack.internal.Nullable;
 
+import javax.rmi.CORBA.Util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class Board {
     public Piece[] getBoard() {
         return this.board;
     }
-    private ArrayList<String> getPreviousBoards() {
+    ArrayList<String> getPreviousBoards() {
         return this.previousBoards;
     }
     ArrayList<Move> getPreviousMoves() {
@@ -66,16 +67,16 @@ public class Board {
         return this.check;
     }
 
-    private void appendPreviousBoards() {
+    void appendPreviousBoards() {
         this.previousBoards.add(this.toString());
     }
     void appendPreviousMoves(Move move) {
         this.previousMoves.add(move);
     }
-    private void incrementNumMoves() {
+    void incrementNumMoves() {
         this.numMoves++;
     }
-    private void incrementTurn() {
+    void incrementTurn() {
         this.turn = 1 - this.turn;
     }
     void setGameState(String gameState) throws ChessException {
@@ -85,10 +86,10 @@ public class Board {
             throw new ChessException("Invalid gameState");
         }
     }
-    private void incrementMslcopa() {
+    void incrementMslcopa() {
         this.mslcopa++;
     }
-    private void resetMslcopa() {
+    void resetMslcopa() {
         this.mslcopa = 0;
     }
     void setCheck(boolean check) {
@@ -117,7 +118,7 @@ public class Board {
         }
         return (whiteMaterial <= 1 || blackMaterial <= 1);
     }
-    private boolean boardRepetitionDraw() {
+    boolean boardRepetitionDraw() {
         for (int i = 0; i < this.getPreviousBoards().size(); i++) {
             int numRepeatedStates = 0;
             for (int j = 0; j < this.getPreviousBoards().size(); j++) {
@@ -125,18 +126,17 @@ public class Board {
                     numRepeatedStates++;
                 }
             }
-            // >3 because it compares it to itself
-            if (numRepeatedStates > 3) {
+            if (numRepeatedStates >= 3) {
                 return true;
             }
         }
         return false;
     }
-    private boolean noLegalMoves(int color) {
+    boolean noLegalMoves(int color) {
         boolean availableMoves = false;
         int kingLocation = Utility.pieces[color][Utility.K].getLocation();
         for (Piece piece : this.getBoard()) {
-            if (piece != null && piece.getColor() == color) {
+            if (piece.getColor() == color) {
                 if (piece.getMoves().size() > 0) {
                     availableMoves = true;
                 }
@@ -172,7 +172,7 @@ public class Board {
         }
 
     }
-    private void updateGameState() {
+    void updateGameState() {
         if (this.isDraw()) {
             this.gameState = "draw";
         } else if (isCheckMated(Utility.BLACK)) {
@@ -183,7 +183,7 @@ public class Board {
             this.gameState = "in progress";
         }
     }
-    private boolean isCheckMated(int color) {
+    boolean isCheckMated(int color) {
         /* 1. King is in check
      * 2. King cannot move
      * 3. If there is only one checking piece:
@@ -213,32 +213,34 @@ public class Board {
 
         if (checkingPieces.size() > 1) {
             return (isChecked && !kingCanMove);
-        }
-
-        // Find possible captures or blocks
-        for (Piece piece : Utility.pieces[color]) {
-            for (Move move : piece.getMoves()) {
-                if (move.getEnd() == checkingPieces.get(0).getLocation()) {
-                    canCapture = true;
+        } else if (checkingPieces.size() == 1) {
+            // Find possible captures or blocks
+            for (Piece piece : Utility.pieces[color]) {
+                for (Move move : piece.getMoves()) {
+                    if (move.getEnd() == checkingPieces.get(0).getLocation()) {
+                        canCapture = true;
+                    }
                 }
             }
-        }
 
-        for (Piece piece : Utility.pieces[color]) {
-            for (Move move : piece.getMoves()) {
-                for (int square : Utility.squaresBetween(checkingPieces.get(0).getLocation(), kingLocation)) {
-                    if (move.getEnd() == square) {
-                        canBlock = true;
+            for (Piece piece : Utility.pieces[color]) {
+                for (Move move : piece.getMoves()) {
+                    for (int square : Utility.squaresBetween(checkingPieces.get(0).getLocation(), kingLocation)) {
+                        if (move.getEnd() == square) {
+                            canBlock = true;
+                        }
                     }
                 }
             }
         }
+
+
         return (isChecked && !kingCanMove && !canBlock && !canCapture);
     }
-    private boolean isDraw() {
+    boolean isDraw() {
         return (this.insufficientMaterial() || this.boardRepetitionDraw() || this.noLegalMoves(this.turn) || this.mslcopa >= 50);
     }
-    private void updateAllMoves() {
+    void updateAllMoves() {
         for (int i = 0; i < 2; i ++) {
             for (Piece piece : Utility.pieces[i]) {
                 if (!piece.isCaptured()) {
@@ -247,18 +249,23 @@ public class Board {
             }
         }
     }
-    boolean move(Move move) {
+    void move(Move move) {
         boolean capture =  move.getCapture();
         boolean check = move.getCheck();
         Piece piece = move.getPiece();
         int location = move.getEnd();
+
+        if (move.getStart() == 45 && move.getEnd() == 13) {
+            System.out.println("YAYAYAYA");
+            System.out.println(piece.isLegalMove(this, move));
+        }
 
         if (piece.isLegalMove(this, move)) {
             this.appendPreviousBoards();                    // Save to prev boards
             if (capture) {                                  // Update capture info
                 this.getSquare(location).getCaptured();
             }
-            this.setSquare(piece.getLocation(), null);        // Change piece and board locations
+            this.setSquare(piece.getLocation(), Utility.nullPiece);        // Change piece and board locations
             this.setSquare(location, piece);
             piece.setLocation(location);
 
@@ -271,38 +278,52 @@ public class Board {
             piece.setMoved();
             this.incrementTurn();       // Increment turn
             this.incrementNumMoves();   // Increment numMoves
-            this.updateGameState();     // Update game state
             this.updateAllMoves();      // Update possible moves
+            this.updateGameState();     // Update game state
 
-            return true;
         } else {
-            return false;
+            throw new ChessException("Invalid move");
         }
     }
 
+
     //TODO: CREATE METHOD
+    /*
     boolean undoMove() {
         if (this.getNumMoves() == 0) {
             return false;
         }
         Move move = this.previousMoves.get(this.previousMoves.size() - 1);
-        this.previousMoves.remove(this.previousMoves.size() - 1);
+        this.previousMoves.remove(this.previousMoves.size() - 1);       // Remove move from previousMoves
+        this.previousBoards.remove(this.previousMoves.size() - 1);      // Remove board from previousBoards
+
+        this.setSquare(move.getStart(), move.getPiece());                   // Move piece back to original square
+        if (move.getCapture()) {
+            String pieceType  =
+            this.setSquare(move.getEnd(), )
+        } else {
+            this.setSquare(move.getEnd(), Utility.nullPiece);
+        }
+
+
+        this.numMoves--;
+
+        this.updateAllMoves();
 
 
 
         return true;
     }
+    */
 
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("");
         for (int i = 0; i < 64; i++) {
-            if (this.getSquare(i).toString() != null) {
-                result.append(this.getSquare(i).toString());
-            } else {
-                result.append("-");
+            result.append(this.getSquare(i).toString());
+            if (i % 8 == 7) {
+                result.append("\n");
             }
-
         }
         return new String(result);
     }

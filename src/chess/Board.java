@@ -152,6 +152,7 @@ public class Board {
                         return false;
                     }
                 }
+
             }
         }
         return true;
@@ -233,8 +234,6 @@ public class Board {
                 }
             }
         }
-
-
         return (isChecked && !kingCanMove && !canBlock && !canCapture);
     }
     boolean isDraw() {
@@ -254,11 +253,6 @@ public class Board {
         boolean check = move.getCheck();
         Piece piece = move.getPiece();
         int location = move.getEnd();
-
-        if (move.getStart() == 45 && move.getEnd() == 13) {
-            System.out.println("YAYAYAYA");
-            System.out.println(piece.isLegalMove(this, move));
-        }
 
         if (piece.isLegalMove(this, move)) {
             this.appendPreviousBoards();                    // Save to prev boards

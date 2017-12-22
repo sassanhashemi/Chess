@@ -89,6 +89,7 @@ public abstract class Piece {
         return this.moved;
     }
 
+
     abstract boolean isLegalMove(Board board, Move move);
 
 

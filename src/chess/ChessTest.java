@@ -331,30 +331,34 @@ public class ChessTest {
         board.move(move4);
     }
 
-    @Test
+    @Test   //TODO: test other checkmates
     public void testIsCheckMated() {
         Board board = new Board();
         assertEquals(false, board.isCheckMated(board.getTurn()));
 
         Move e4 = new Move(board.getSquare(52), 52, 36);
-        Move e5 = new Move(board.getSquare(12), 12, 28);
-        Move Bc4 = new Move(board.getSquare(61), 61, 34);
-        Move a4 = new Move(board.getSquare(8), 8, 24);
-        Move Qf3 = new Move(board.getSquare(59), 59, 45);
-        Move Nc6 = new Move(board.getSquare(1), 1, 18);
-        Move Qf7 = new Move(board.getSquare(45), 45, 13, true);
-
         board.move(e4);
+        Move e5 = new Move(board.getSquare(12), 12, 28);
         board.move(e5);
-        //board.move(Bc4);
-        //board.move(a4);
+        Move Bc4 = new Move(board.getSquare(61), 61, 34);
+        board.move(Bc4);
+        Move a4 = new Move(board.getSquare(8), 8, 24);
+        board.move(a4);
+        Move Qf3 = new Move(board.getSquare(59), 59, 45);
         board.move(Qf3);
+        Move Nc6 = new Move(board.getSquare(1), 1, 18);
         board.move(Nc6);
+        Move Qf7 = new Move(board.getSquare(45), 45, 13, true);
         board.move(Qf7);
 
         assertEquals(true, board.isCheckMated(board.getTurn()));
     }
 
+    @Test
+    public void testIsSafe() {
+
+
+    }
     //TO TEST
     /*
      * public void testIsCheckMated

@@ -89,18 +89,42 @@ public class King extends Piece {
 
         return (!hasKingMoved && !hasRookMoved && !isKingChecked && !squaresAttacked && emptySquares && startsMatch);
     }
+
+    //TODO: You can't put yourself into check
     public boolean isLegalMove(Board board, Move move) {
         int location = move.getEnd();
         boolean obstructedEnd = (board.getSquare(location).getColor() == this.getColor());
         int dX = Utility.getRC(location)[1] - Utility.getRC(this.getLocation())[1];
         int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(location)[0];
         boolean oneSquare = Math.abs(dX) <= 1 && Math.abs(dY) <= 1;
-        boolean isSafe = board.isSafe(location, this.getColor());
         boolean startsMatch = move.getStart() == this.getLocation();
         boolean capture = (board.getSquare(move.getEnd()).getColor()) == 1 - this.getColor();
         boolean correctCapture = capture == move.getCapture();
 
+        boolean isSafe;
+        if (board.getSquare(move.getEnd()).toString().equals("-")) {
+            isSafe = board.isSafe(location, this.getColor());
+        } else {
+            Piece piece = board.getSquare(move.getEnd());
+            board.setSquare(move.getEnd(), Utility.nullPiece);
+            isSafe = this.isLegalMove(board, move);
+            board.setSquare(move.getEnd(), piece);
+        }
+
         return ((oneSquare && !obstructedEnd && isSafe && startsMatch && correctCapture) || canCastle(board, move));
+    }
+
+
+    boolean isLegalMoveProtect(Board board, Move move) {
+        if (board.getSquare(move.getEnd()).toString().equals("-")) {
+            return this.isLegalMove(board, move);
+        } else {
+            Piece piece = board.getSquare(move.getEnd());
+            board.setSquare(move.getEnd(), Utility.nullPiece);
+            boolean result = this.isLegalMove(board, move);
+            board.setSquare(move.getEnd(), piece);
+            return result;
+        }
     }
 
     @Override

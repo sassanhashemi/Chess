@@ -250,23 +250,6 @@ public class ChessTest {
         assertEquals(4, Utility.getRC(28)[1]);
     }
 
-    @Test   // COMPLETE
-    public void testTempStringToMove() {
-        Board board = new Board();
-
-        Move move1 = Utility.tempStringToMove(board, "d2-d4");
-        Move move2 = Utility.tempStringToMove(board, "b1-c3");
-
-        assertEquals(51, move1.getStart());
-        assertEquals(35, move1.getEnd());
-        assertEquals(true, move1.getPiece() instanceof Pawn);
-        assertEquals(false, move1.getCapture());
-        assertEquals(57, move2.getStart());
-        assertEquals(42, move2.getEnd());
-        assertEquals(true, move2.getPiece() instanceof Knight);
-        assertEquals(false, move2.getCapture());
-    }
-
     @Test
     public void testUpdateAllMoves() {
         Board board = new Board();
@@ -361,10 +344,9 @@ public class ChessTest {
     }
     //TO TEST
     /*
-     * public void testIsCheckMated
+     * public void testCanCaptureEnPassant
      * public void testUndoMove
-     * public void testStringToBoard
-     * promotion and en passant
+     * promotion
      */
 
 }

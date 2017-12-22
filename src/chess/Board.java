@@ -86,11 +86,12 @@ public class Board {
             throw new ChessException("Invalid gameState");
         }
     }
-    void incrementMslcopa() {
-        this.mslcopa++;
-    }
-    void resetMslcopa() {
-        this.mslcopa = 0;
+    void incrementMslcopa(boolean increment) {
+        if (increment) {
+            this.mslcopa++;
+        } else {
+            this.mslcopa = 0;
+        }
     }
     void setCheck(boolean check) {
         this.check = check;
@@ -263,11 +264,7 @@ public class Board {
             this.setSquare(location, piece);
             piece.setLocation(location);
 
-            if (!piece.toString().equals("P") && !piece.toString().equals("p") && !capture) { // Increment mslcopa
-                this.incrementMslcopa();
-            } else {
-                this.resetMslcopa();
-            }
+            this.incrementMslcopa(!piece.toString().equals("P") && !piece.toString().equals("p") && !capture);
 
             piece.setMoved();
             this.incrementTurn();       // Increment turn

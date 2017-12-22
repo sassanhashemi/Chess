@@ -30,6 +30,25 @@ public class Pawn extends Piece {
         boolean startsMatch = this.getLocation() == move.getStart();
         return (!obstructedEnd && (legalAdvanceOne || legalAdvanceTwo) && startsMatch);
     }
+    private boolean canCaptureEnPassant(Board board, Move move) {
+        int direction = -2 * (this.getColor()) + 1; // if +1, moves up, if -1, moves down
+        int dX = Utility.getRC(move.getEnd())[1] - Utility.getRC(this.getLocation())[1];
+        int dY = Utility.getRC(this.getLocation())[0] - Utility.getRC(move.getEnd())[0];
+        boolean enemyPawnExists = board.getSquare(move.getEnd() + 8 * direction).getColor() == 1 - this.getColor() && board.getSquare(move.getEnd() + 8 * direction).getType().equals("Pawn");
+        boolean rightDirection = (dY == direction) && (Math.abs(dX) == 1);
+        boolean startsMatch = this.getLocation() == move.getStart();
+        boolean capture = (board.getSquare(move.getEnd()).getColor()) == 1 - this.getColor();
+        boolean correctCapture = capture == move.getCapture();
+        Move lastMove = board.getPreviousMoves().get(board.getNumMoves() - 1);
+        boolean correctPawn = lastMove.getPiece() == board.getSquare(move.getEnd() + 8 * direction);
+        boolean correctStart = lastMove.getStart() >= 8 && lastMove.getEnd() <= 15;
+        boolean correctEnd = lastMove.getEnd() >= 24 && lastMove.getEnd() <= 31;
+        boolean pawnMovedLast = correctPawn && correctStart && correctEnd;
+
+        return (enemyPawnExists && rightDirection && startsMatch && correctCapture && pawnMovedLast);
+    }
+
+    //TODO: Add can capture en passant after testing
     public boolean isLegalMove(Board board, Move move) {
         return this.canCapture(board, move) || this.canAdvance(board, move);
     }

@@ -9,12 +9,14 @@ package chess;
 
 public class Game {
 
+    public int winner;      // -1 = nobody, 0 = white, 1 = black, 2 = draw
+
 
     Game() {
         Board board = new Board();
+        this.setWinner(-1);
         this.playGame(board);
         this.gameOver(board);
-
     }
 
     private void playGame(Board board) {
@@ -50,5 +52,16 @@ public class Game {
         }
     }
 
+    private void setWinner(int winner) throws ChessException {
+        if (winner >= -1 && winner <= 2) {
+            this.winner = winner;
+        } else {
+            throw new ChessException("Invalid winner");
+        }
+    }
+
+    private int getWinner() {
+        return this.winner;
+    }
 
 }

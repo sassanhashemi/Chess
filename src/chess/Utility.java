@@ -168,6 +168,14 @@ class Utility {
     //TODO: Add promotion
     //TODO: Fix Rae1
     static Move stringToMove(String moveStr, int turn) throws ChessException {
+        // Castling
+        if (moveStr.equals("0-0")) {
+            return new Move(Utility.pieces[turn][Utility.K], Utility.pieces[turn][Utility.K].getLocation(), 62 - 56 * turn);
+        } else if (moveStr.equals("0-0-0")) {
+            return new Move(Utility.pieces[turn][Utility.K], Utility.pieces[turn][Utility.K].getLocation(), 58 - 56 * turn);
+        }
+
+        //Piece type
         ArrayList<Piece> possiblePieces = new ArrayList<Piece>();
         Piece piece = nullPiece;
         String pieceType = "";
@@ -202,14 +210,18 @@ class Utility {
                 break;
         }
 
+        //Capturing
         boolean capture = moveStr.charAt(1) == 'x' || moveStr.charAt(2) == 'x';
         int capture1 = (moveStr.charAt(1) == 'x') ? 1 : 0;
         int capture2 = (moveStr.charAt(2) == 'x') ? 1 : 0;
         int captureInt = capture1 + capture2;
+
+        //Location
         int letter = moveStr.charAt(1 + captureInt) - 97;
         int number = 8 - moveStr.charAt(2 + captureInt);
         int location = 8 * number + letter;
 
+        //Find specific piece
         for (Piece currPiece : pieces[turn]) {
             if (currPiece.getType().equals(pieceType) && !currPiece.isCaptured()) {
                 for (Move move : currPiece.getMoves()) {
@@ -220,20 +232,40 @@ class Utility {
             }
         }
 
-        //TODO: Finish this
-        if (possiblePieces.size() > 1) {
+        //Finding piece
+        //TODO: Take into account multiple pawns that can capture a piece
+        if (possiblePieces.size() > 1 && capture2 == 1) {                   // If there are more than 1 possible pieces and it is specified in the move
             Piece piece1 = possiblePieces.get(0);
             Piece piece2 = possiblePieces.get(1);
             if (piece1.getLocation() / 8 == piece2.getLocation() / 8) {         // Same Row
                 int let = moveStr.charAt(1) - 97;
+                if (let < 0 || let >= 8) {
+                    throw new ChessException("Invalid row number");
+                }
+                if (piece1.getLocation() % 8 == let) {
+                    piece = piece1;
+                } else if (piece2.getLocation() % 8 == let) {
+                    piece = piece2;
+                } else {
+                    throw new ChessException("Logic error: no piece is currently on the specified square");
+                }
             } else if (piece1.getLocation() % 8 == piece2.getLocation() % 8) {  // Same column
                 int num = moveStr.charAt(1) - 49;
                 if ((num < 0 || num >= 8)) {
                     throw new ChessException("Invalid column number");
                 }
+                if (piece1.getLocation() / 8 == num) {
+                    piece = piece1;
+                } else if (piece2.getLocation() / 8 == num) {
+                    piece = piece2;
+                } else {
+                    throw new ChessException("Logic error: no piece is currently on the specified square");
+                }
             }
-        } else {
+        } else if (possiblePieces.size() == 1 && capture1 == 1) {
             piece = possiblePieces.get(0);
+        } else {
+            throw new ChessException("Invalid move format");
         }
 
         if (piece == nullPiece) {

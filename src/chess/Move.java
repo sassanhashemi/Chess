@@ -11,14 +11,8 @@ class Move {
     private boolean capture;
     private boolean promotion;
     private boolean check;
+    private boolean enPassant;
 
-    Move(Piece piece, int start, int end, boolean capture, boolean promotion) {
-        this.piece = piece;
-        this.start = start;
-        this.end = end;
-        this.capture = capture;
-        this.promotion = promotion;
-    }
 
     Move(Piece piece, int start, int end) {
         this.piece = piece;
@@ -26,15 +20,33 @@ class Move {
         this.end = end;
         this.capture = false;
         this.promotion = false;
+        this.enPassant = false;
     }
-
     Move(Piece piece, int start, int end, boolean capture) {
         this.piece = piece;
         this.start = start;
         this.end = end;
         this.capture = capture;
-        promotion = false;
+        this.promotion = false;
+        this.enPassant = false;
     }
+    Move(Piece piece, int start, int end, boolean capture, boolean promotion) {
+        this.piece = piece;
+        this.start = start;
+        this.end = end;
+        this.capture = capture;
+        this.promotion = promotion;
+        this.enPassant = false;
+    }
+    Move(Piece piece, int start, int end, boolean capture, boolean promotion, boolean enPassant) {
+        this.piece = piece;
+        this.start = start;
+        this.end = end;
+        this.capture = capture;
+        this.promotion = promotion;
+        this.enPassant = enPassant;
+    }
+
 
 
     int getStart() {
@@ -55,6 +67,10 @@ class Move {
     boolean getCheck() {
         return this.check;
     }
+    boolean getEnPassant() {
+        return this.enPassant;
+    }
+
     void setStart(int start) {
         this.start = start;
     }
@@ -72,6 +88,9 @@ class Move {
     }
     void setCheck(boolean check) {
         this.check = check;
+    }
+    void setEnPassant(boolean enPassant) {
+        this.enPassant = enPassant;
     }
 
     @Override

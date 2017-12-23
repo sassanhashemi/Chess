@@ -27,7 +27,7 @@ public class Game {
             } catch (ChessException e){
                 System.out.println(e.toString());
             }
-            System.out.println(board.toString());
+            System.out.println(board.printBoard());
         }
     }
 

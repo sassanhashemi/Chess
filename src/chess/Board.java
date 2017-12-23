@@ -19,14 +19,7 @@ public class Board {
     private boolean check;
 
     Board() {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 16; j++) {
-                this.setSquare(Utility.pieces[i][j].getLocation(), Utility.pieces[i][j]);
-            }
-        }
-        for (int i = 16; i < 48; i++) {
-            this.setSquare(i, Utility.nullPiece);
-        }
+        this.reset();
         this.previousBoards = new ArrayList<String>();
         this.previousMoves = new ArrayList<Move>();
         this.numMoves = 0;
@@ -47,7 +40,7 @@ public class Board {
         return this.previousMoves;
     }
     public int getNumMoves() throws ChessException {
-        if (numMoves > 0) {
+        if (numMoves >= 0) {
             return this.numMoves;
         } else {
             throw new ChessException("Number of moves is < 0");
@@ -96,9 +89,30 @@ public class Board {
     void setCheck(boolean check) {
         this.check = check;
     }
+    String printBoard() {
+        StringBuilder result = new StringBuilder("");
+        for (int i = 0; i < 64; i++) {
+            result.append(this.getSquare(i).toString());
+            result.append(" ");
+            if (i % 8 == 7) {
+                result.append("\n");
+            }
+        }
+        return new String(result);
+    }
 
     void clear() {
         for (int i = 0; i < 64; i++) {
+            this.setSquare(i, Utility.nullPiece);
+        }
+    }
+    void reset() {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 16; j++) {
+                this.setSquare(Utility.pieces[i][j].getLocation(), Utility.pieces[i][j]);
+            }
+        }
+        for (int i = 16; i < 48; i++) {
             this.setSquare(i, Utility.nullPiece);
         }
     }
@@ -249,33 +263,80 @@ public class Board {
             }
         }
     }
+    void castle(Move move) {
+        assert(move.isCastling());
+        if (move.getEnd() == 2) {
+            Rook rook = (Rook) Utility.pieces[move.getPiece().getColor()][Utility.R1];
+            this.setSquare(3, rook);
+            this.setSquare(rook.getLocation(), Utility.nullPiece);
+            rook.setLocation(3);
+        } else if (move.getEnd() == 6) {
+            Rook rook = (Rook) Utility.pieces[move.getPiece().getColor()][Utility.R2];
+            this.setSquare(5, rook);
+            this.setSquare(rook.getLocation(), Utility.nullPiece);
+            rook.setLocation(5);
+        } else if (move.getEnd() == 58) {
+            Rook rook = (Rook) Utility.pieces[move.getPiece().getColor()][Utility.R1];
+            this.setSquare(59, rook);
+            this.setSquare(rook.getLocation(), Utility.nullPiece);
+            rook.setLocation(59);
+        } else if (move.getEnd() == 62) {
+            Rook rook = (Rook) Utility.pieces[move.getPiece().getColor()][Utility.R2];
+            this.setSquare(61, rook);
+            this.setSquare(rook.getLocation(), Utility.nullPiece);
+            rook.setLocation(61);
+        }
+        this.setSquare(move.getPiece().getLocation(), Utility.nullPiece);
+        this.setSquare(move.getEnd(), move.getPiece());
+        move.getPiece().setLocation(move.getEnd());
+    }
+    void captureEnPassant(Move move) {
+        int direction = -2 * (move.getPiece().getColor()) + 1; // if +1, moves up, if -1, moves down
+        this.setSquare(move.getPiece().getLocation(), Utility.nullPiece);           // Set capturing pawn's square to null
+        this.setSquare(move.getEnd(), move.getPiece());                             // Set end square to pawn
+        this.getSquare(move.getEnd() + 8 * direction).getCaptured();        // Update captured pawns' attributes
+        this.setSquare(move.getEnd() + 8 * direction, Utility.nullPiece);   // Set captured pawn's square to null
+        move.getPiece().setLocation(move.getEnd());
+    }
     void move(Move move) {
         boolean capture =  move.getCapture();
-        boolean check = move.getCheck();
         Piece piece = move.getPiece();
         int location = move.getEnd();
 
         if (piece.isLegalMove(this, move)) {
             this.appendPreviousBoards();                    // Save to prev boards
+            this.appendPreviousMoves(move);
             if (capture) {                                  // Update capture info
                 this.getSquare(location).getCaptured();
             }
-            this.setSquare(piece.getLocation(), Utility.nullPiece);        // Change piece and board locations
-            this.setSquare(location, piece);
-            piece.setLocation(location);
+
+            //Special moves
+            if (move.isCastling()) {
+                this.castle(move);
+            } else if (move.isEnPassant(this)) {
+                this.captureEnPassant(move);
+            } else if (move.isPromotion()){
+                Utility.promote(this, (Pawn) piece, move.getPromotion());
+            } else {
+                this.setSquare(piece.getLocation(), Utility.nullPiece);
+                this.setSquare(location, piece);
+                piece.setLocation(location);
+            }
+
+            //TODO: add promotion above
+
 
             this.incrementMslcopa(!piece.toString().equals("P") && !piece.toString().equals("p") && !capture);
-
             piece.setMoved();
             this.incrementTurn();       // Increment turn
             this.incrementNumMoves();   // Increment numMoves
             this.updateAllMoves();      // Update possible moves
             this.updateGameState();     // Update game state
-
         } else {
             throw new ChessException("Invalid move");
         }
     }
+
 
 
     //TODO: CREATE METHOD

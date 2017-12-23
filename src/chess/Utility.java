@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 //TODO: moves to location and moves to piece
 //TODO: Get input in getMove
+//TODO: When putting the king in check, don't check pawn's moves
+
 
 
 class Utility {
@@ -275,6 +277,7 @@ class Utility {
         return new Move(piece, piece.getLocation(), location, capture);
     }
 
+    //TODO: FIX EN PASSANT
     static Move tempStringToMove(Board board) throws ChessException {
         // Move in format e2-e4
         String moveStr = Utility.getMove(board.getTurn());
@@ -283,18 +286,21 @@ class Utility {
         Piece piece = board.getSquare(start);
         boolean capture = board.getSquare(end).getColor() == 1 - piece.getColor();
         Move move = new Move(piece, start, end, capture);
+        boolean enPassant = move.isEnPassant(board);
         while (!piece.isLegalMove(board, move)) {
             moveStr = Utility.getMove(board.getTurn());
             start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
             end = (moveStr.charAt(3) - 97) + 8 * (8 - (moveStr.charAt(4) - 48));
             piece = board.getSquare(start);
             capture = board.getSquare(end).getColor() == 1 - piece.getColor();
-            move = new Move(piece, start, end, capture);
+            move = new Move(piece, start, end, capture, "", enPassant);
         }
-        return new Move(piece, start, end, capture);
+        //TODO: Check to see if i should just return move
+        return new Move(piece, start, end, capture, "", enPassant);
 
     }
 
+    /*
     static Move tempStringToMove(Board board, String moveStr) {
         // Move in format e2-e4
         int start = (moveStr.charAt(0) - 97) + 8 * (8 - (moveStr.charAt(1) - 48));
@@ -306,18 +312,36 @@ class Utility {
         return move;
 
     }
-
-
-    /*
-    public static Board toBoard(String boardStr) {
-        Board board = new Board();
-        Board
-        board.clear();
-        for (int i = 0; i < 64; i++) {
-            Piece piece = boar
-        }
-    }
     */
-    //public static void promote(Pawn pawn, Piece piece);
+
+    public static void promote(Board board, Pawn pawn, String pieceType) throws ChessException {
+        int index = -1;
+        for (int i = 8; i < 16; i++) {
+            if (Utility.pieces[pawn.getColor()][i] == pawn) {
+                index = i;
+            }
+        }
+
+        if (pieceType.equals("Queen")) {
+            Queen queen = new Queen(pawn.getColor(), pawn.getLocation());
+            board.setSquare(queen.getLocation(), queen);
+            Utility.pieces[pawn.getColor()][index] = queen;
+        } else if (pieceType.equals("Rook")) {
+            Rook rook = new Rook(pawn.getColor(), pawn.getLocation());
+            board.setSquare(rook.getLocation(), rook);
+            Utility.pieces[pawn.getColor()][index] = rook;
+        } else if (pieceType.equals("Bishop")) {
+            Bishop bishop = new Bishop(pawn.getColor(), pawn.getLocation());
+            board.setSquare(bishop.getLocation(), bishop);
+            Utility.pieces[pawn.getColor()][index] = bishop;
+        } else if (pieceType.equals("Knight")) {
+            Knight knight = new Knight(pawn.getColor(), pawn.getLocation());
+            board.setSquare(knight.getLocation(), knight);
+            Utility.pieces[pawn.getColor()][index] = knight;
+        } else {
+            throw new ChessException("Invalid piece type parameter");
+        }
+
+    }
 
 }

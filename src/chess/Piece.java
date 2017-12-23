@@ -82,6 +82,7 @@ public abstract class Piece {
     }
     void getCaptured() {
         this.captured = true;
+        this.moved = true;
         this.moves = new ArrayList<Move>();
         this.setLocation(-1);
     }
@@ -92,5 +93,5 @@ public abstract class Piece {
 
     abstract boolean isLegalMove(Board board, Move move);
 
-
 }
+

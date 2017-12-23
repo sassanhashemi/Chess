@@ -9,7 +9,7 @@ class Move {
     private int start;
     private int end;
     private boolean capture;
-    private boolean promotion;
+    private String promotion;
     private boolean check;
     private boolean enPassant;
 
@@ -19,7 +19,7 @@ class Move {
         this.start = start;
         this.end = end;
         this.capture = false;
-        this.promotion = false;
+        this.promotion = "";
         this.enPassant = false;
     }
     Move(Piece piece, int start, int end, boolean capture) {
@@ -27,10 +27,10 @@ class Move {
         this.start = start;
         this.end = end;
         this.capture = capture;
-        this.promotion = false;
+        this.promotion = "";
         this.enPassant = false;
     }
-    Move(Piece piece, int start, int end, boolean capture, boolean promotion) {
+    Move(Piece piece, int start, int end, boolean capture, String promotion) {
         this.piece = piece;
         this.start = start;
         this.end = end;
@@ -38,7 +38,7 @@ class Move {
         this.promotion = promotion;
         this.enPassant = false;
     }
-    Move(Piece piece, int start, int end, boolean capture, boolean promotion, boolean enPassant) {
+    Move(Piece piece, int start, int end, boolean capture, String promotion, boolean enPassant) {
         this.piece = piece;
         this.start = start;
         this.end = end;
@@ -61,7 +61,7 @@ class Move {
     boolean getCapture() {
         return this.capture;
     }
-    boolean getPromotion() {
+    String getPromotion() {
         return this.promotion;
     }
     boolean getCheck() {
@@ -69,6 +69,9 @@ class Move {
     }
     boolean getEnPassant() {
         return this.enPassant;
+    }
+    boolean isPromotion() {
+        return !this.promotion.equals("");
     }
 
     void setStart(int start) {
@@ -83,7 +86,7 @@ class Move {
     void setCapture(boolean capture) {
         this.capture = capture;
     }
-    void setPromotion(boolean promotion) {
+    void setPromotion(String promotion) {
         this.promotion = promotion;
     }
     void setCheck(boolean check) {
@@ -92,6 +95,24 @@ class Move {
     void setEnPassant(boolean enPassant) {
         this.enPassant = enPassant;
     }
+
+    //boolean putsKingInCheck(Board board) { }
+    boolean isCastling() {
+        boolean king = this.getPiece().toString().equals("K") || this.getPiece().toString().equals("k");
+        boolean castling = Math.abs(this.getStart() - this.getEnd()) > 1;
+        boolean rightSquare = this.getEnd() == 2 || this.getEnd() == 6 || this.getEnd() == 56 || this.getEnd() == 62;
+        return king && castling && rightSquare;
+    }
+    boolean isEnPassant(Board board) {
+        if (this.getPiece().toString().equals("p") || this.getPiece().toString().equals("P")) {
+            Pawn pawn = (Pawn) this.getPiece();
+            if (pawn.canCaptureEnPassant(board, this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public String toString() {

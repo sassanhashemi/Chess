@@ -1,6 +1,5 @@
 package chess;
 
-//TODO: CHeck knight is legal move and pawn is legal move
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -196,19 +195,20 @@ public class ChessTest {
         assertEquals(true, rook.isLegalMove(board, move5));
     }
 
-    @Test   // TODO: UNFINISHED
+    @Test   // TODO: Test castling queenside
     public void testKingIsLegalMove() {
         Board board = new Board();
         King king = (King) board.getSquare(60);
         board.clear();
         board.setSquare(60, king);
 
+        //Normal moves
         Move move1 = new Move(king, king.getLocation(), 52); // Up 1: true
         Move move2 = new Move(king, king.getLocation(), 61); // Right 1: true
         Move move3 = new Move(king, king.getLocation(), 59); // Left 1: true
         Move move4 = new Move(king, king.getLocation(), 53); // Up Right 1: true
         Move move5 = new Move(king, king.getLocation(), 44); // Up 2: false
-        Move move6 = new Move(king, king.getLocation(), 62); // Right 2: false
+        //Move move6 = new Move(king, king.getLocation(), 62); // Right 2: false
         Move move7 = new Move(king, king.getLocation(), 52, true); // Up 1 capture: true
         Move move8 = new Move(king, king.getLocation(), 59, true); // Up Left 1 capture
 
@@ -217,11 +217,27 @@ public class ChessTest {
         assertEquals(true, king.isLegalMove(board, move3));
         assertEquals(true, king.isLegalMove(board, move4));
         assertEquals(false, king.isLegalMove(board, move5));
-        assertEquals(false, king.isLegalMove(board, move6));
+        //assertEquals(false, king.isLegalMove(board, move6));
         board.setSquare(52, Utility.pieces[Utility.BLACK][3]);
         assertEquals(true, king.isLegalMove(board, move7));
         board.setSquare(59, Utility.pieces[Utility.BLACK][3]);
         assertEquals(true, king.isLegalMove(board, move8));
+
+        //Castling kingside
+        board.reset();
+        Knight WN2 = (Knight) board.getSquare(62);
+        Pawn WE = (Pawn) board.getSquare(52);
+        Bishop WB2 = (Bishop) board.getSquare(61);
+        Pawn BA = (Pawn) board.getSquare(8);
+        board.move(new Move(WN2, WN2.getLocation(), 45));   //Nf3
+        board.move(new Move(BA, BA.getLocation(), 16));     //a6
+        board.move(new Move(WE, WE.getLocation(), 36));     //e4
+        board.move(new Move(BA, BA.getLocation(), 24));     //a5
+        board.move(new Move(WB2, WB2.getLocation(), 34));   //Bc4
+        board.move(new Move(BA, BA.getLocation(), 32));     //a4
+        Move castling = new Move(king, king.getLocation(), 62);
+        System.out.println(king.canCastle(board, castling));
+        //board.move(new Move(king, king.getLocation(), 62));
     }
 
     @Test   // TODO: UNFINISHED
@@ -233,11 +249,6 @@ public class ChessTest {
         Move move4 = Utility.stringToMove("Raxe1", Utility.WHITE);
         Move move5 = Utility.stringToMove("0-0", Utility.WHITE);
         Move move6 = Utility.stringToMove("0-0-0", Utility.WHITE);
-
-
-
-
-
     }
 
     @Test   // COMPLETE
@@ -337,14 +348,32 @@ public class ChessTest {
         assertEquals(true, board.isCheckMated(board.getTurn()));
     }
 
-    @Test
-    public void testIsSafe() {
+    @Test   // COMPLETE
+    public void testCanCaptureEnPassant() {
+        Board board = new Board();
+        Pawn whiteE = (Pawn) board.getSquare(52);
+        Pawn blackA = (Pawn) board.getSquare(8);
+        Pawn blackD = (Pawn) board.getSquare(11);
 
+
+        board.move(new Move(whiteE, whiteE.getLocation(), 36));
+        board.move(new Move(blackA, blackA.getLocation(), 16));
+
+        Move ep1 = new Move(whiteE, whiteE.getLocation(), 21, true, "", true);
+        Move ep2 = new Move(whiteE, whiteE.getLocation(), 29, true, "", true);
+        assertEquals(false, whiteE.canCaptureEnPassant(board, ep1));
+        assertEquals(false, whiteE.canCaptureEnPassant(board, ep2));
+
+        board.move(new Move(whiteE, whiteE.getLocation(), 28));
+        board.move(new Move(blackD, blackD.getLocation(), 27));
+
+        Move ep3 = new Move(whiteE, whiteE.getLocation(), 19, true, "", true);
+        assertEquals(true, whiteE.canCaptureEnPassant(board, ep3));
+        assertEquals(true, whiteE.isLegalMove(board, ep3));
 
     }
     //TO TEST
     /*
-     * public void testCanCaptureEnPassant
      * public void testUndoMove
      * promotion
      */

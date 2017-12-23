@@ -9,7 +9,7 @@ public class King extends Piece {
         super("King", color, location);
     }
 
-    private boolean canCastle(Board board, Move move) {
+    boolean canCastle(Board board, Move move) {
         /* 1. King and rook have not moved (king complete)
         * 2. The king is not checked (complete)
         * 3. There is no enemy piece attacking a square between the king and rook (complete)
@@ -18,7 +18,7 @@ public class King extends Piece {
         int location = move.getEnd();
         boolean hasKingMoved = this.hasMoved();
         boolean hasRookMoved;
-        boolean isKingChecked = board.isSafe(this.getLocation(), this.getColor());
+        boolean isKingChecked = !board.isSafe(this.getLocation(), this.getColor());
         boolean emptySquares = true;
         boolean squaresAttacked = false;
         boolean startsMatch = this.getLocation() == move.getStart();
@@ -26,7 +26,7 @@ public class King extends Piece {
         if (location == 2 && this.getColor() == Utility.BLACK) {
             hasRookMoved = Utility.pieces[this.getColor()][Utility.R1].hasMoved();
             for (int i = 1; i < 4; i++) {
-                if (board.getSquare(i) != null) {
+                if (!board.getSquare(i).toString().equals(Utility.nullPiece.toString())) {
                     emptySquares = false;
                 }
             }
@@ -41,7 +41,7 @@ public class King extends Piece {
         } else if (location == 6 && this.getColor() == Utility.BLACK) {
             hasRookMoved = Utility.pieces[this.getColor()][Utility.R2].hasMoved();
             for (int i = 5; i < 7; i++) {
-                if (board.getSquare(i) != null) {
+                if (!board.getSquare(i).toString().equals(Utility.nullPiece.toString())) {
                     emptySquares = false;
                 }
             }
@@ -56,7 +56,7 @@ public class King extends Piece {
         } else if (location == 58 && this.getColor() == Utility.WHITE) {
             hasRookMoved = Utility.pieces[this.getColor()][Utility.R1].hasMoved();
             for (int i = 57; i < 60; i++) {
-                if (board.getSquare(i) != null) {
+                if (!board.getSquare(i).toString().equals(Utility.nullPiece.toString())) {
                     emptySquares = false;
                 }
             }
@@ -71,7 +71,7 @@ public class King extends Piece {
         } else if (location == 62 && this.getColor() == Utility.WHITE) {
             hasRookMoved = Utility.pieces[this.getColor()][Utility.R2].hasMoved();
             for (int i = 61; i < 63; i++) {
-                if (board.getSquare(i) != null) {
+                if (!board.getSquare(i).toString().equals(Utility.nullPiece.toString())) {
                     emptySquares = false;
                 }
             }
@@ -86,7 +86,6 @@ public class King extends Piece {
         } else {
             return false;
         }
-
         return (!hasKingMoved && !hasRookMoved && !isKingChecked && !squaresAttacked && emptySquares && startsMatch);
     }
 
@@ -100,32 +99,21 @@ public class King extends Piece {
         boolean startsMatch = move.getStart() == this.getLocation();
         boolean capture = (board.getSquare(move.getEnd()).getColor()) == 1 - this.getColor();
         boolean correctCapture = capture == move.getCapture();
-
         boolean isSafe;
+
         if (board.getSquare(move.getEnd()).toString().equals("-")) {
             isSafe = board.isSafe(location, this.getColor());
         } else {
             Piece piece = board.getSquare(move.getEnd());
             board.setSquare(move.getEnd(), Utility.nullPiece);
-            isSafe = this.isLegalMove(board, move);
+            Move moveWithoutCapture = move;
+            moveWithoutCapture.setCapture(false);
+            isSafe = this.isLegalMove(board, moveWithoutCapture);
             board.setSquare(move.getEnd(), piece);
         }
-
         return ((oneSquare && !obstructedEnd && isSafe && startsMatch && correctCapture) || canCastle(board, move));
     }
 
-
-    boolean isLegalMoveProtect(Board board, Move move) {
-        if (board.getSquare(move.getEnd()).toString().equals("-")) {
-            return this.isLegalMove(board, move);
-        } else {
-            Piece piece = board.getSquare(move.getEnd());
-            board.setSquare(move.getEnd(), Utility.nullPiece);
-            boolean result = this.isLegalMove(board, move);
-            board.setSquare(move.getEnd(), piece);
-            return result;
-        }
-    }
 
     @Override
     public String toString() {

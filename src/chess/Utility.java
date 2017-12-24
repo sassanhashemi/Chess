@@ -321,7 +321,6 @@ class Utility {
                 index = i;
             }
         }
-
         if (pieceType.equals("Queen")) {
             Queen queen = new Queen(pawn.getColor(), pawn.getLocation());
             board.setSquare(queen.getLocation(), queen);

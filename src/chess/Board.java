@@ -315,12 +315,15 @@ public class Board {
                 this.castle(move);
             } else if (move.isEnPassant(this)) {
                 this.captureEnPassant(move);
-            } else if (move.isPromotion()){
-                Utility.promote(this, (Pawn) piece, move.getPromotion());
             } else {
                 this.setSquare(piece.getLocation(), Utility.nullPiece);
                 this.setSquare(location, piece);
                 piece.setLocation(location);
+            }
+
+            if (move.isPromotion()){
+                Utility.promote(this, (Pawn) piece, "Queen");
+                //TODO: change pieceType to move.getPromotion() after stringToMove func is done
             }
 
             //TODO: add promotion above

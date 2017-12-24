@@ -70,9 +70,7 @@ class Move {
     boolean getEnPassant() {
         return this.enPassant;
     }
-    boolean isPromotion() {
-        return !this.promotion.equals("");
-    }
+
 
     void setStart(int start) {
         this.start = start;
@@ -111,6 +109,11 @@ class Move {
             }
         }
         return false;
+    }
+    boolean isPromotion() {
+        boolean pawn = this.getPiece().toString().equals("P") || this.getPiece().toString().equals("p");
+        boolean eighthRank = this.getEnd() ==8 - 8 * this.getPiece().getColor();
+        return pawn && eighthRank;
     }
 
 

@@ -1,3 +1,7 @@
+// Game.java
+// Sassan Hashemi
+
+
 package chess;
 
 //TODO: en passant

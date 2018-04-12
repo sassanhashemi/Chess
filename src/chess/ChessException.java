@@ -1,3 +1,6 @@
+// ChessException.java
+// Sassan Hashemi
+
 package chess;
 
 

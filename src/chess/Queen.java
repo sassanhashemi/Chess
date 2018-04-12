@@ -1,3 +1,6 @@
+// Queen.java
+// Sassan Hashemi
+
 package chess;
 
 public class Queen extends Piece {

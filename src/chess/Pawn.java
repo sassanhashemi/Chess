@@ -1,7 +1,5 @@
 package chess;
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
-
 public class Pawn extends Piece {
 
     Pawn(int color, int location) {

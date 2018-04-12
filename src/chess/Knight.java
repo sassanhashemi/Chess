@@ -1,3 +1,6 @@
+// Knight.java
+// Sassan Hashemi
+
 package chess;
 
 public class Knight extends Piece {

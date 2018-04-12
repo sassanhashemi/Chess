@@ -1,3 +1,6 @@
+// Board.java
+// Sassan Hashemi
+
 package chess;
 
 import com.sun.istack.internal.Nullable;

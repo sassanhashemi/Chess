@@ -1,3 +1,6 @@
+// NullPiece.java
+// Sassan Hashemi
+
 package chess;
 
 public class NullPiece extends Piece {

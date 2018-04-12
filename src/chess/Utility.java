@@ -1,3 +1,6 @@
+// Utility.java
+// Sassan Hashemi
+
 package chess;
 
 import java.io.BufferedReader;

@@ -1,3 +1,6 @@
+// King.java
+// Sassan Hashemi
+
 package chess;
 
 //TODO: fix abs call in all piece files

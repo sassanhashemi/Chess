@@ -1,3 +1,6 @@
+// Move.java
+// Sassan Hashemi
+
 package chess;
 
 //TODO: Add check to constructors

@@ -1,3 +1,6 @@
+// ChessTest.java
+// Sassan Hashemi
+
 package chess;
 
 

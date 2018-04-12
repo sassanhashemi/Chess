@@ -1,3 +1,6 @@
+// Bishop.java
+// Sassan Hashemi
+
 package chess;
 
 public class Bishop extends Piece {

@@ -5,6 +5,7 @@ package chess;
 
 public class Bishop extends Piece {
 
+
     Bishop(int color, int location) {
         super("Bishop", color, location);
     }

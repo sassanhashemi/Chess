@@ -3,7 +3,7 @@
 
 package chess;
 
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.Nullable;
 
 import java.util.ArrayList;
 
@@ -97,4 +97,3 @@ public abstract class Piece {
     abstract boolean isLegalMove(Board board, Move move);
 
 }
-

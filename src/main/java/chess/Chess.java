@@ -10,14 +10,16 @@ import java.io.IOException;
 
 
 public class Chess {
-
+    /*
     public static void main(String[] args) {
+
         boolean choice = true;
         while (choice) {
             choice = Chess.introMessage();
             Chess.play(choice);
         }
-    }
+        System.out.println("Hello World");
+    }*/
 
     private static Boolean introMessage() {
         System.out.println("Welcome to Chess! Please make a selection");
